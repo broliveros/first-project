@@ -1,6 +1,8 @@
 body {
-    margin: 0;
     font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #dbeafe, #93c5fd);
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,54 +10,99 @@ body {
 }
 
 .container {
-    background: #ffffff;
+    background: white;
     padding: 2rem;
     border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
     width: 100%;
     max-width: 400px;
-    text-align: center;
 }
 
-form{
+form {
     display: flex;
-    gap: 0.5rem;
+    gap: 10px;
     margin-bottom: 1rem;
 }
 
 input[type="text"] {
     flex: 1;
-    padding: 0.5rem;
-    border-radius: 5px;
+    padding: 10px;
+    font-size: 1rem;
     border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 button {
-    padding: 0.5rem 1rem;
-    border: none;
-    background-color: #007BFF;
+    padding: 10px 15px;
+    font-size: 1rem;
+    background-color: #3b82f6;
     color: white;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #2563eb;
 }
 
 #weather-result {
     margin-top: 1rem;
-    font-size: 1.2rem;
-}
-
-#loading {
-    display: none;
-    font-style: italic;
-    color: gray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #weather-icon {
-    margin-top: 1rem;
-    width: 64px;
-    height: 64px;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#weather-info h3 {
+    margin: 0;
+}
+
+#loading {
+    font-style: italic;
+    color: #555;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+#search-history {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 150px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    z-index: 10;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+#search-history li{
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+#search-history li:hover {
+    background-color: #f0f0f0;
+}
+
+.hidden {
+    display: none;
 }

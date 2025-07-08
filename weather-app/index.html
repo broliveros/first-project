@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content=""width=device-width, initial-scale="1.0"/>
-    <title>Weather App</title>
-    <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-    <div class="container">
-        <h1>Weather Checking</h1>
-        <form id="weather-form">
-            <input type="text" id="city-input" placeholder="Enter city name" required />
-            <button type="submit">Get Weather</button>
-        </form>
-        <p id="loading" style="display: none;">Loading. . .</p>
-        <div id="weather-result"></div>
-    </div>
-    </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Weather Checker</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
     <body>
+        <div class="container">
+            <h1>Weather Checker</h1>
 
-    <!-- vv This connects your script.js file -->
-     <script src="script.js"></script>
-</body>
+            <div class="input-wrapper">
+            <form id="weather-form">
+                <input type="text" id="city-input" placeholder="Enter a city" autocomplete="off" />
+                <button type="submit">Get Weather</button>
+            </form>
+            <ul id="search-history" class="hidden"></ul>
+            </div>
+
+            <div id="loading" style="display: none;">Loading. . .</div>
+
+            <div id="weather-result" class="card" style="display: none;">
+                <img id="weather-icon" alt="Weather Icon" />
+                <div id="weather-info"></div>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
 </html>
-    

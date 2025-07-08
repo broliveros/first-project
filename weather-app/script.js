@@ -1,58 +1,95 @@
-const form = document.getElementById('weather-form');
-const input = document.getElementById('city-input');
-const result = document.getElementById('weather-result');
-const loading = document.getElementById('loading');
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("weather-form");
+    const input = document.getElementById("city-input");
+    const result = document.getElementById("weather-result")
+    const icon = document.getElementById("weather-icon");
+    const info = document.getElementById("weather-info");
+    const loading = document.getElementById("loading");
+    const historyList = document.getElementById("search-history");
+    let history = JSON.parse(localStorage.getItem("weatherHistory")) || [];
 
-form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    const city = input.value.trim();
-    console.log('[Submit] City entered:', city);
-    if (city ==='') {
-        result.textContent = 'Please enter a city name.';
-        return;
+    function renderHistory() {
+        historyList.innerHTML = "";
+        if (history.lenght === 0) {
+            historyList.classList.add("hidden");
+            return;
+        }
+
+        historyList.classList.remove("hidden");
+
+        history.forEach((city) => {
+            const li = document.createElement("li");
+            li.textContent = city;
+            li.addEventListener("click", () => {
+                input.value = city;
+                form.dispatchEvent(new Event("subtmit"));
+                historyList.classList.add("hidden");
+            });
+            historyList.appendChild(li);
+        });
     }
 
-    loading.style.display = 'block';
-    result.textContent = '';
-    getWeather(city);
+input.addEventListener("input", () => {
+    if (input.value.trim() === "") {
+        historyList.classList.add("hidden");
+    } else {
+        renderHistory();
+    }
 });
 
-async function getWeather(city) {
-    const apiKey = '15af2d85d2f044bbb7b21731250307'
-    const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=no`;
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-    console.log('[Fetch] URL:', url);
+        historyList.style.display = "none";
 
-    try {
-        const response = await fetch(url);
-        console.log('[Fetch] Response OK:', response.ok);
+        const city = input.value.trim();
+        if (!city) return;
 
-        if (!response.ok) {
-            throw new Error ('City not found or API error.');
+        result.style.display = "none";
+        loading.style.display = "block";
+        icon.src = "";
+        info.innerHTML = "";
+
+        try {
+            const apiKey = "15af2d85d2f044bbb7b21731250307";
+            const response = await fetch(
+            `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`
+        );
+
+        if (!response.ok) throw new Error("City not found");
+
+        const data = await response.json();
+
+        const temp = data.current.temp_c;
+        const condition = data.current.condition.text;
+        const location = data.location.name;
+        const country = data.location.country;
+        const iconUrl = "https:" + data.current.condition.icon;
+
+        icon.src = iconUrl;
+        icon.alt = condition;
+        icon.style.display = "block";
+
+        info.innerHTML = `
+        <h3>${location}, ${country}</h3>
+        <p>${temp}°C - ${condition}</p>
+        `;
+
+        result.style.display = "block";
+
+        if (!history.includes(location)) {
+            history.unshift(location);
+            history = history.slice(0, 5);
+            localStorage.setItem("weatherHistory", JSON.stringify(history));
         }
 
-            const data = await response.json();
-            console.log('[Data] Parsed JSON:', data);
+    }   catch (error) {
+        info.innerHTML = `<p style="color:red;">${error.message}</p>`;
+        result.style.display = "block";
+    }   finally {
+        loading.style.display = "none";
+    }
+  });
 
-            if (!data || !data.current || typeof data.current.temp_c === 'undefined') {
-                throw new Error('Incomplete weather data received.');
-            }
-
-            const temp = data.current.temp_c;
-            const condition = data.current.condition.text;
-            const location = data.location.name;
-            const country = data.location.country;
-
-            result.innerHTML = `
-            <h3>${location}, ${country}</h3>
-            <p>${temp}°C - ${condition}</p>
-            `;
-        } catch (error) {
-            console.error('[Error]', error.message);
-            result.textContent = error.message;
-        } finally {
-            loading.style.display = 'none';
-        }
-     }
-
-    
+  renderHistory();
+});
