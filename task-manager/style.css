@@ -71,3 +71,39 @@ li {
 .delete-btn:hover {
     color: #b91c1c;
 }
+
+.completed {
+    text-decoration: line-through;
+    color: gray;
+}
+
+li {
+    display: flex;
+    align-items: center;
+    justify-items: space-between;
+    padding: 8px 0;
+}
+
+li input[type="checkbox"] {
+    align-items: center;
+}
+
+li span.completed {
+    text-decoration: line-through;
+    color: gray;
+    flex-grow: 1;
+}
+
+#clear-completed-btn {
+    margin-top: 1rem;
+    padding: 10px;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#clear-completed-btn:hover {
+    background-color: #dc2626;
+}
