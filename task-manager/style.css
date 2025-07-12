@@ -19,22 +19,47 @@ body {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-form {
+form.form-row {
     display: flex;
     gap: 10px;
     margin-bottom: 1rem;
+    align-items: stretch;
 }
 
-input[type="text"] {
-    flex: 1;
-    padding: 10px;
+input[type="text"],
+button {
+    height: 44px;
+    padding: 10 15px;
     font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#add-task-btn {
+    background-color: #E6BE8A;
+    color: white;
+    border: none;
+}
+
+#add-task-btn:hover {
+    background-color: #E6BE8A;
+}
+
+#clear-completed-btn {
+    background-color: #191970;
+    color: white;
+    border: none;
+}
+
+#clear-completed-btn:hover {
+    background-color: #191970;
 }
 
 button {
     padding: 10px 15px;
     font-size: 1rem;
-    background-color: #10b981;
+    background-color: #E6BE8A;
     color: white;
     border: none;
     cursor: pointer;
@@ -42,7 +67,7 @@ button {
 }
 
 button:hover {
-    background-color: #059669;
+    background-color: #E6BE8A;
 }
 
 ul {
@@ -51,25 +76,28 @@ ul {
 }
 
 li {
+    padding: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
     padding: 10px;
     background: #f9fafb;
     margin-bottom: 8px;
     border: 1px solid #e5e7eb;
     border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
+    box-sizing: border-box;
 }
 
 .delete-btn {
     background: none;
     border: none;
-    color: #ef4444;
+    color: #191970;
     font-size: 1rem;
     cursor: pointer;
 }
 
 .delete-btn:hover {
-    color: #b91c1c;
+    color: #191970;
 }
 
 .completed {
@@ -77,21 +105,14 @@ li {
     color: gray;
 }
 
-li {
-    display: flex;
-    align-items: center;
-    justify-items: space-between;
-    padding: 8px 0;
-}
-
 li input[type="checkbox"] {
     align-items: center;
 }
 
-li span.completed {
-    text-decoration: line-through;
-    color: gray;
+li span {
     flex-grow: 1;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .button-group {
@@ -99,23 +120,4 @@ li span.completed {
     gap: 10px;
     margin-top: 10px;
 }
-
-.button-group button {
-    flex: 1;
-}
-
-#clear-completed-btn {
-    margin-top: 1rem;
-    padding: 10px;
-    background-color: #ef4444;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#clear-completed-btn:hover {
-    background-color: #dc2626;
-}
-
 
