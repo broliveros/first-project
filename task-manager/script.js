@@ -3,6 +3,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("task-input");
     const list = document.getElementById("task-list");
 
+    const filterButtons = document.querySelectorAll("#filter-buttons button");
+    let currentFilter = "all";
+
+    filterButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            currentFilter = button.dataset.filter;
+
+            filterButtons.forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
+
+            renderTasks();
+        });
+    });
+
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
     function saveTask() {
@@ -10,38 +24,45 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderTasks() {
-        list.innerHTML = "";
+        taskList.innerHTML = "";
+
         tasks.forEach((task, index) => {
+            const isCompleted = task.completed;
+
+            if (
+                currentFilter === "active" && isCompleted ||
+                currentFilter === "completed" && !isCompleted
+            ) {
+                return;
+            }
+
             const li = document.createElement("li");
-            
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            checkbox.checked = task.completed;
+            checkbox.checked = isCompleted;
             checkbox.addEventListener("change", () => {
-                tasks[index].completed = checkbox.checked;
-                saveTask();
+                task.completed = checkbox.checked;
+                saveTasks();
                 renderTasks();
             });
 
-            const label = document.createElement("span");
-            label.textContent = task.text;
-            if (task.completed) {
-                label.classList.add("completed");
-            }
-
+            const span = document.createElement("span");
+            span.textContent = task.text;
+            if (isCompleted) span.classList.add("completed");
+        
             const deleteBtn = document.createElement("button");
             deleteBtn.textContent = "X";
-            deleteBtn.classList.add("delete-btn");
+            deleteBtn.className = "delete-btn";
             deleteBtn.addEventListener("click", () => {
                 tasks.splice(index, 1);
-                saveTask();
+                saveTasks();
                 renderTasks();
             });
             
             li.appendChild(checkbox);
-            li.appendChild(label);
+            li.appendChild(span);
             li.appendChild(deleteBtn);
-            list.appendChild(li);
+            taskList.appendChild(li);
         });
     }
 
