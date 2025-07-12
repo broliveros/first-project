@@ -19,12 +19,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-    function saveTask() {
+    function saveTasks() {
         localStorage.setItem("tasks", JSON.stringify(tasks));
     }
 
     function renderTasks() {
-        taskList.innerHTML = "";
+        list.innerHTML = "";
 
         tasks.forEach((task, index) => {
             const isCompleted = task.completed;
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
             li.appendChild(checkbox);
             li.appendChild(span);
             li.appendChild(deleteBtn);
-            taskList.appendChild(li);
+            list.appendChild(li);
         });
     }
 
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!taskText) return;
 
         tasks.push({ text: taskText, completed: false });
-        saveTask();
+        saveTasks();
         renderTasks();
         input.value = "";
     });
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("clear-completed-btn").addEventListener("click", () => {
         tasks = tasks.filter(task => !task.completed);
-        saveTask();
+        saveTasks();
         renderTasks();
     });
 });
