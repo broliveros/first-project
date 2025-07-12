@@ -94,6 +94,16 @@ li span.completed {
     flex-grow: 1;
 }
 
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.button-group button {
+    flex: 1;
+}
+
 #clear-completed-btn {
     margin-top: 1rem;
     padding: 10px;
@@ -107,3 +117,5 @@ li span.completed {
 #clear-completed-btn:hover {
     background-color: #dc2626;
 }
+
+
