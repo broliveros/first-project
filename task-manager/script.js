@@ -27,23 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
         list.innerHTML = "";
 
         tasks.sort((a, b) => {
-            if (a.dueDate && b.dueDate) {
-                return new Date(a.dueDate) - new Date(b.dueDate);
-            } else if (a.dueDate) {
-                return -1;
-            } else if (b.dueDate) {
-                return 1;
-            }
-            return 0;
-        });
-
-        const sortedTasks = [...tasks].sort((a, b) => {
             if (!a.dueDate) return 1;
             if (!b.dueDate) return -1;
             return new Date(a.dueDate) - new Date(b.dueDate);
         });
 
-        sortedTasks.forEach((task, index) => {
+        tasks.forEach((task, index) => {
             const isCompleted = task.completed;
 
             if (
@@ -54,6 +43,21 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const li = document.createElement("li");
+            const now = new Date();
+            if (task.dueDate) {
+                const dueDate = new Date(task.dueDate);
+                const timeDiff = dueDate - now;
+                const oneDay = 24 * 60 *60 * 1000;
+
+                if (timeDiff < -oneDay) {
+                    li.classList.add("task-overdue");
+                } else if (timeDiff < oneDay) {
+                    li.classList.add("task-due-soon");
+                } else {
+                    li.classList.add("task-future");
+                }
+             }
+            
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.checked = isCompleted;
@@ -83,14 +87,47 @@ document.addEventListener("DOMContentLoaded", () => {
                 saveTasks();
                 renderTasks();
             });
+
+            const editBtn = document.createElement("button");
+            editBtn.textContent = "Edit";
+            editBtn.className = "edit-btn";
+            editBtn.addEventListener("click", () => {
+                const editInput = document.createElement("input");
+                editInput.type = "text";
+                editInput.value = task.text;
+
+                const editDate = document.createElement("input");
+                editDate.type = "date";
+                editDate.value = task.dueDate || "";
+
+                const saveBtn = document.createElement("button");
+                    saveBtn.textContent = "Save";
+                    saveBtn.className = "save-btn";
+
+                const cancelBtn = document.createElement("button");
+                cancelBtn.textContent = "Cancel";
+                cancelBtn.className = "cancel-btn";
             
+            li.innerHTML = "";
             li.appendChild(checkbox);
-            li.appendChild(span);
-            li.appendChild(due);
-            li.appendChild(deleteBtn);
-            list.appendChild(li);
+            li.appendChild(editInput);
+            li.appendChild(editDate);
+            li.appendChild(saveBtn);
+            li.appendChild(cancelBtn);
+
+            saveBtn.addEventListener("click", () => {
+                task.text = editBtn.value.trim ();
+                task.dueDate = editDate.value;
+                saveTasks();
+                renderTasks();
+            
+
+            cancelBtn.addEventListener("click", () => {
+                renderTasks();
+            
         });
-    }
+        li.appendChild(editBtn);
+    });
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -113,5 +150,3 @@ document.addEventListener("DOMContentLoaded", () => {
         saveTasks();
         renderTasks();
     });
-});
-

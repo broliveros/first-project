@@ -153,3 +153,56 @@ li small {
     color: #6b7280;
     margin-left: 30px;
 }
+
+.task-due-soon {
+    background-color: #fef9c3;
+}
+
+.task-overdue {
+    background-color: #fecaca;
+}
+
+.task-future {
+    background-color: #d1fae5;
+}
+
+.edit-btn {
+    margin-left: 8px;
+    background-color: #facc15;
+    border: none;
+    color: #1f2937;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background-color: #eab308;
+}
+
+.save-btn {
+    margin-left: 8px;
+    background-color: #10b981;
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.save-btn:hover {
+    background-color: #059669;
+}
+
+.cancel-btn {
+    margin-left: 5px;
+    background-color: #d1d5db;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cancel-btn:hover {
+    background-color: #9ca3af;
+}
