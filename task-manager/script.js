@@ -26,7 +26,24 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderTasks() {
         list.innerHTML = "";
 
-        tasks.forEach((task, index) => {
+        tasks.sort((a, b) => {
+            if (a.dueDate && b.dueDate) {
+                return new Date(a.dueDate) - new Date(b.dueDate);
+            } else if (a.dueDate) {
+                return -1;
+            } else if (b.dueDate) {
+                return 1;
+            }
+            return 0;
+        });
+
+        const sortedTasks = [...tasks].sort((a, b) => {
+            if (!a.dueDate) return 1;
+            if (!b.dueDate) return -1;
+            return new Date(a.dueDate) - new Date(b.dueDate);
+        });
+
+        sortedTasks.forEach((task, index) => {
             const isCompleted = task.completed;
 
             if (
@@ -47,9 +64,17 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const span = document.createElement("span");
-            span.textContent = task.text;
+            if (task.dueDate) {
+                span.innerHTML = `${task.text} <br><small style="color:gray;"><em>Due: ${task.dueDate}</em></small>`;
+            } else {
+                span.textContent = task.text;
+            }
+
             if (isCompleted) span.classList.add("completed");
         
+            const due = document.createElement("small");
+            due.style.fontStyle = "italic";
+
             const deleteBtn = document.createElement("button");
             deleteBtn.textContent = "X";
             deleteBtn.className = "delete-btn";
@@ -61,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
             
             li.appendChild(checkbox);
             li.appendChild(span);
+            li.appendChild(due);
             li.appendChild(deleteBtn);
             list.appendChild(li);
         });
@@ -69,12 +95,15 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         const taskText = input.value.trim();
+        const dueDate = document.getElementById("due-date").value;
+
         if (!taskText) return;
 
-        tasks.push({ text: taskText, completed: false });
+        tasks.push({ text: taskText, completed: false, dueDate });
         saveTasks();
         renderTasks();
         input.value = "";
+        document.getElementById("due-date").value = "";
     });
 
     renderTasks();
