@@ -76,13 +76,23 @@ ul {
 }
 
 li {
-    display: block;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    background: #f9fafb;
-    margin-bottom: 8px;
-    border: 1px solid #e5e7eb;
-    border-radius: 5px;
+    gap: 1rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.task-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.task-buttons {
+    display: flex;
+    gap: 0.5rem;
 }
 
 .delete-btn {
@@ -102,8 +112,10 @@ li {
     color: gray;
 }
 
-li input[type="checkbox"] {
-    align-items: center;
+li input[type="checkbox"],
+li input[type="text"],
+li input[type="date"] {
+    margin-top: 5px;
 }
 
 li span {

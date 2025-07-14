@@ -33,22 +33,56 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         tasks.forEach((task, index) => {
+            const li = document.createElement("li");
             const isCompleted = task.completed;
 
+            li.setAttribute("draggable", "true");
+
+            li.addEventListener("dragstart", (e) => {
+                e.dataTransfer.setData("text/plain", index);
+                li.style.opacity = "0.5";
+            });
+
+            li.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                li.style.borderTop = "2px dashed #333";
+            });
+
+            li.addEventListener("dragleave", () => {
+                li.style.borderTop = "";
+            });
+
+            li.addEventListener("drop", (e) => {
+                e.preventDefault();
+                li.style.borderTop = "";
+                li.style.opacity = "1";
+
+                const draggedIndex = parseInt(e.dataTransfer.getData("text/plain"));
+                const targetIndex = index;
+
+                if (draggedIndex === targetIndex) return;
+
+                const [movedTask] = tasks.splice(draggedIndex, 1);
+                tasks.splice(targetIndex, 0, movedTask);
+                
+                saveTasks();
+                renderTasks();
+            });
+
+            const now = new Date();
+
             if (
-                currentFilter === "active" && isCompleted ||
-                currentFilter === "completed" && !isCompleted
+                (currentFilter === "active" && isCompleted) ||
+                (currentFilter === "completed" && !isCompleted)
             ) {
                 return;
             }
 
-            const li = document.createElement("li");
-            const now = new Date();
             if (task.dueDate) {
                 const dueDate = new Date(task.dueDate);
                 const timeDiff = dueDate - now;
-                const oneDay = 24 * 60 *60 * 1000;
-
+                const oneDay = 24 * 60 * 60 * 1000;
+             
                 if (timeDiff < -oneDay) {
                     li.classList.add("task-overdue");
                 } else if (timeDiff < oneDay) {
@@ -68,30 +102,17 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const span = document.createElement("span");
-            if (task.dueDate) {
-                span.innerHTML = `${task.text} <br><small style="color:gray;"><em>Due: ${task.dueDate}</em></small>`;
-            } else {
-                span.textContent = task.text;
-            }
-
-            if (isCompleted) span.classList.add("completed");
-        
-            const due = document.createElement("small");
-            due.style.fontStyle = "italic";
-
-            const deleteBtn = document.createElement("button");
-            deleteBtn.textContent = "X";
-            deleteBtn.className = "delete-btn";
-            deleteBtn.addEventListener("click", () => {
-                tasks.splice(index, 1);
-                saveTasks();
-                renderTasks();
-            });
+            span.innerHTML = task.dueDate
+                ? `${task.text}<br><small style="color: gray;"><em>Due: ${task.dueDate}</em></small>`
+                : task.text;
+                if (isCompleted) span.classList.add("completed");
 
             const editBtn = document.createElement("button");
             editBtn.textContent = "Edit";
             editBtn.className = "edit-btn";
             editBtn.addEventListener("click", () => {
+                li.innerHTML= "";
+
                 const editInput = document.createElement("input");
                 editInput.type = "text";
                 editInput.value = task.text;
@@ -107,33 +128,52 @@ document.addEventListener("DOMContentLoaded", () => {
                 const cancelBtn = document.createElement("button");
                 cancelBtn.textContent = "Cancel";
                 cancelBtn.className = "cancel-btn";
-            
+
+                saveBtn.addEventListener("click",() => {
+                    task.text = editInput.value.trim();
+                    task.dueDate = editDate.value;
+                    saveTasks();
+                    renderTasks();
+                });
+
+                cancelBtn.addEventListener("click", () => {
+                    renderTasks();
+                });
+
             li.innerHTML = "";
             li.appendChild(checkbox);
-            li.appendChild(span);
             li.appendChild(editInput);
             li.appendChild(editDate);
             li.appendChild(saveBtn);
             li.appendChild(cancelBtn);
+        });
 
-            saveBtn.addEventListener("click", () => {
-                task.text = editInput.value.trim();
-                task.dueDate = editDate.value;
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "X";
+            deleteBtn.className = "delete-btn";
+            deleteBtn.addEventListener("click", () => {
+                tasks.splice(index, 1);
                 saveTasks();
                 renderTasks();
-             });
+            });
 
-            cancelBtn.addEventListener("click", () => {
-                renderTasks();
-             });
-    });
-        
-        li.appendChild(editBtn);
-        list.appendChild(li);
-    });
-}
+                const contentDiv = document.createElement("div");
+                contentDiv.className = "task-content";
+                contentDiv.appendChild(checkbox);
+                contentDiv.appendChild(span);
 
-    form.addEventListener("submit", (e) => {
+                const btnDiv = document.createElement("div");
+                btnDiv.className = "task-buttons";
+                btnDiv.appendChild(editBtn);
+                btnDiv.appendChild(deleteBtn);
+
+                li.appendChild(contentDiv);
+                li.appendChild(btnDiv);
+                list.appendChild(li);
+        });
+    }
+     
+        form.addEventListener("submit", (e) => {
         e.preventDefault();
         const taskText = input.value.trim();
         const dueDate = document.getElementById("due-date").value;
