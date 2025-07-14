@@ -101,8 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 editDate.value = task.dueDate || "";
 
                 const saveBtn = document.createElement("button");
-                    saveBtn.textContent = "Save";
-                    saveBtn.className = "save-btn";
+                saveBtn.textContent = "Save";
+                saveBtn.className = "save-btn";
 
                 const cancelBtn = document.createElement("button");
                 cancelBtn.textContent = "Cancel";
@@ -116,20 +116,18 @@ document.addEventListener("DOMContentLoaded", () => {
             li.appendChild(cancelBtn);
 
             saveBtn.addEventListener("click", () => {
-                task.text = editBtn.value.trim ();
+                task.text = editInput.value.trim();
                 task.dueDate = editDate.value;
                 saveTasks();
                 renderTasks();
-            
-            });
+             });
 
             cancelBtn.addEventListener("click", () => {
                 renderTasks();
-            
-        });
-            });
-        li.appendChild(editBtn);
+             });
     });
+
+        li.appendChild(editBtn);
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
