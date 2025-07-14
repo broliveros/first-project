@@ -110,6 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
             
             li.innerHTML = "";
             li.appendChild(checkbox);
+            li.appendChild(span);
             li.appendChild(editInput);
             li.appendChild(editDate);
             li.appendChild(saveBtn);
@@ -126,8 +127,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 renderTasks();
              });
     });
-
+        
         li.appendChild(editBtn);
+        list.appendChild(li);
+    });
+}
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();

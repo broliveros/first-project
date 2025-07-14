@@ -76,16 +76,13 @@ ul {
 }
 
 li {
-    padding: flex;
+    display: block;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
     padding: 10px;
     background: #f9fafb;
     margin-bottom: 8px;
     border: 1px solid #e5e7eb;
     border-radius: 5px;
-    box-sizing: border-box;
 }
 
 .delete-btn {
@@ -110,9 +107,14 @@ li input[type="checkbox"] {
 }
 
 li span {
+    display: block;
     flex-grow: 1;
-    margin-left: 10px;
     margin-right: 10px;
+    word-break: break-word;
+}
+
+li button {
+    margin-left: 5px;
 }
 
 .button-group {
