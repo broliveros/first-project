@@ -121,11 +121,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 saveTasks();
                 renderTasks();
             
+            });
 
             cancelBtn.addEventListener("click", () => {
                 renderTasks();
             
         });
+            });
         li.appendChild(editBtn);
     });
 
@@ -150,3 +152,4 @@ document.addEventListener("DOMContentLoaded", () => {
         saveTasks();
         renderTasks();
     });
+});
