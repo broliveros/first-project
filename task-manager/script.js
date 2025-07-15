@@ -36,38 +36,58 @@ document.addEventListener("DOMContentLoaded", () => {
             const li = document.createElement("li");
             const isCompleted = task.completed;
 
-            li.setAttribute("draggable", "true");
-
-            li.addEventListener("dragstart", (e) => {
-                e.dataTransfer.setData("text/plain", index);
-                li.style.opacity = "0.5";
+            list.addEventListener("dragstart", (e) => {
+                if (e.target.tagName === "LI") {
+                    e.target.classList.add("dragging");
+                }
             });
 
-            li.addEventListener("dragover", (e) => {
+            list.addEventListener("dragend", (e) => {
+                if (e.target.tagName === "LI") {
+                    e.target.classList.remove("dragging");
+
+                    const newOrder = [];
+                    list.quearySelectorAll("li"),forEach((li) => {
+                        const taskText = li.quearySelector("span").textContent.split("Due:")[0].trim();
+                        const match = tasks.find((t) => t.text === taskText);
+                        if (match) newOrder.push(match);
+                    });
+
+                    tasks = newOrder;
+                    saveTasks();
+                }
+            });
+
+            list.addEventListener("dragover", (e) => {
                 e.preventDefault();
-                li.style.borderTop = "2px dashed #333";
+                const dragging = document.quearySelector(".dragging");
+                if (!dragging) return;
+
+                const afterElement = getDragAfterElement(list, e.clientY);
+                if (afterElement == null) {
+                    list.appendChild(dragging);
+                } else {
+                    list.insertBefore(dragging, afterElement);
+                }
             });
 
-            li.addEventListener("dragleave", () => {
-                li.style.borderTop = "";
-            });
-
-            li.addEventListener("drop", (e) => {
-                e.preventDefault();
-                li.style.borderTop = "";
-                li.style.opacity = "1";
-
-                const draggedIndex = parseInt(e.dataTransfer.getData("text/plain"));
-                const targetIndex = index;
-
-                if (draggedIndex === targetIndex) return;
-
-                const [movedTask] = tasks.splice(draggedIndex, 1);
-                tasks.splice(targetIndex, 0, movedTask);
-                
-                saveTasks();
-                renderTasks();
-            });
+            function getDragAfterElement(container, y) {
+                const draggableElements = [...container.quearySelectorAll("li:not(.dragging)")];
+        
+            return draggableElements.reduce(
+                (closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = y - box.top - box.height / 2;
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset: offset, element: child };
+                    } else {
+                        return closest;
+                    }
+                },
+                { offset: Number.NEGATIVE_INFINITY }
+            ).element;
+        }
+        
 
             const now = new Date();
 
