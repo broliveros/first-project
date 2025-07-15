@@ -37,8 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const isCompleted = task.completed;
 
             li.setAttribute("draggable", "true");
-            
-            list.appendChild(li);
         
             const now = new Date();
 
@@ -155,14 +153,22 @@ document.addEventListener("DOMContentLoaded", () => {
             e.target.classList.remove("dragging");
 
             const newOrder = [];
+            const completedTasks = [];
+
             list.querySelectorAll("li").forEach((li) => {
-                const text = li.querySelectorAll("span").textContent.split("Due:")[0].trim();
+                const text = li.querySelector("span").textContent.split("Due:")[0].trim();
                 const match = tasks.find((t) => t.text === text);
-                if (match) newOrder.push(match);
+
+                if (match) {
+                    if (match.completed) {
+                        completedTasks.push(match);
+                    }
+                }
             });
 
-            tasks = newOrder;
+            tasks = [...newOrder, ...completedTasks];
             saveTasks();
+            renderTasks();
         }
     });
 
@@ -172,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!dragging) return;
 
         const afterElement = getDragAfterElement(list, e.clientY);
+        list.querySelectorAll("li").forEach((li) => li.classList.remove("drag-over"));
         if (afterElement == null) {
             list.appendChild(dragging);
         } else {
@@ -180,20 +187,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function getDragAfterElement(container, y) {
-        const draggableElements = [
-            ...container.querySelectorAll("li:not(.dragging)")
-        ];
+        const draggableElements = [...container.querySelectorAll("li:not(.dragging)")];
 
         return draggableElements.reduce(
             (closest, child) => {
                 const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
                 if (offset < 0 && offset > closest.offset) {
                     return { offset: offset, element: child };
                 } else {
                     return closest;
                 }
             },
-            { offset: Number.NEGATIVE_INFINITY }
+            { offset: Number.NEGATIVE_INFINITY, element: null }
         ).element;
     }
     
@@ -219,3 +225,4 @@ document.addEventListener("DOMContentLoaded", () => {
         saveTasks();
         renderTasks();
     });
+});
