@@ -36,58 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const li = document.createElement("li");
             const isCompleted = task.completed;
 
-            list.addEventListener("dragstart", (e) => {
-                if (e.target.tagName === "LI") {
-                    e.target.classList.add("dragging");
-                }
-            });
-
-            list.addEventListener("dragend", (e) => {
-                if (e.target.tagName === "LI") {
-                    e.target.classList.remove("dragging");
-
-                    const newOrder = [];
-                    list.quearySelectorAll("li"),forEach((li) => {
-                        const taskText = li.quearySelector("span").textContent.split("Due:")[0].trim();
-                        const match = tasks.find((t) => t.text === taskText);
-                        if (match) newOrder.push(match);
-                    });
-
-                    tasks = newOrder;
-                    saveTasks();
-                }
-            });
-
-            list.addEventListener("dragover", (e) => {
-                e.preventDefault();
-                const dragging = document.quearySelector(".dragging");
-                if (!dragging) return;
-
-                const afterElement = getDragAfterElement(list, e.clientY);
-                if (afterElement == null) {
-                    list.appendChild(dragging);
-                } else {
-                    list.insertBefore(dragging, afterElement);
-                }
-            });
-
-            function getDragAfterElement(container, y) {
-                const draggableElements = [...container.quearySelectorAll("li:not(.dragging)")];
-        
-            return draggableElements.reduce(
-                (closest, child) => {
-                    const box = child.getBoundingClientRect();
-                    const offset = y - box.top - box.height / 2;
-                    if (offset < 0 && offset > closest.offset) {
-                        return { offset: offset, element: child };
-                    } else {
-                        return closest;
-                    }
-                },
-                { offset: Number.NEGATIVE_INFINITY }
-            ).element;
-        }
-        
+            li.setAttribute("draggable", "true");
+            
+            list.appendChild(li);
+        });
+    }
 
             const now = new Date();
 
@@ -191,8 +144,60 @@ document.addEventListener("DOMContentLoaded", () => {
                 li.appendChild(btnDiv);
                 list.appendChild(li);
         });
+
+    list.addEventListener("dragstart", (e) => {
+        if (e.target.tagName === "LI") {
+            e.target.classList.add("dragging");
+        }
+    });
+
+    list.addEventListener("dragend", (e) => {
+        if (e.target.tagName === "LI") {
+            e.target.classList.remove("dragging");
+
+            const newOrder = [];
+            list.querySelectorAll("li").forEach((li) => {
+                const text = li.querySelectorAll("span").textContent.split("Due:")[0].trim();
+                const match = tasks.find((t) => t.text === text);
+                if (match) newOrder.push(match);
+            });
+
+            tasks = newOrder;
+            saveTasks();
+        }
+    });
+
+    list.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        const dragging = document.querySelector(".dragging");
+        if (!dragging) return;
+
+        const afterElement = getDragAfterElement(list, e.clientY);
+        if (afterElement == null) {
+            list.appendChild(dragging);
+        } else {
+            list.insertBefore(dragging, afterElement);
+        }
+    });
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [
+            ...container.querySelectorAll("li:not(.dragging)")
+        ];
+
+        return draggableElements.reduce(
+            (closest, child) => {
+                const box = child.getBoundingClientRect();
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            },
+            { offset: Number.NEGATIVE_INFINITY }
+        ).element;
     }
-     
+    
         form.addEventListener("submit", (e) => {
         e.preventDefault();
         const taskText = input.value.trim();
@@ -209,9 +214,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderTasks();
 
+
     document.getElementById("clear-completed-btn").addEventListener("click", () => {
         tasks = tasks.filter(task => !task.completed);
         saveTasks();
         renderTasks();
     });
-});
