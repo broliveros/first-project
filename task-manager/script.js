@@ -27,7 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
         list.innerHTML = "";
 
         tasks.sort((a, b) => {
-            if (!a.dueDate) return 1;
+        tasks.forEach((task) => {
+            if ((filter === "active" && task.completed) ||
+                (filter === "completed" && !task.completed)) {
+                    return;
+                }
+
             if (!b.dueDate) return -1;
             return new Date(a.dueDate) - new Date(b.dueDate);
         });
@@ -36,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const li = document.createElement("li");
             const isCompleted = task.completed;
 
+            li.dataset.id = task.id;
             li.setAttribute("draggable", "true");
         
             const now = new Date();
@@ -52,15 +58,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 const timeDiff = dueDate - now;
                 const oneDay = 24 * 60 * 60 * 1000;
              
-                if (timeDiff < -oneDay) {
-                    li.classList.add("task-overdue");
-                } else if (timeDiff < oneDay) {
-                    li.classList.add("task-due-soon");
-                } else {
-                    li.classList.add("task-future");
+                if (timeDiff < -oneDay) li.classList.add("task-overdue");
+                else if (timeDiff < oneDay) li.classList.add("task-due-soon");
+                else li.classList.add("task-future");
                 }
-             }
-            
+                        
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.checked = isCompleted;
@@ -74,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
             span.innerHTML = task.dueDate
                 ? `${task.text}<br><small style="color: gray;"><em>Due: ${task.dueDate}</em></small>`
                 : task.text;
-                if (isCompleted) span.classList.add("completed");
+            if (isCompleted) span.classList.add("completed");
 
             const editBtn = document.createElement("button");
             editBtn.textContent = "Edit";
@@ -121,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
             deleteBtn.textContent = "X";
             deleteBtn.className = "delete-btn";
             deleteBtn.addEventListener("click", () => {
-                tasks.splice(index, 1);
+                tasks = tasks.filter((t) => t.id !== task.id);
                 saveTasks();
                 renderTasks();
             });
@@ -210,15 +212,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!taskText) return;
 
-        tasks.push({ text: taskText, completed: false, dueDate });
-        saveTasks();
-        renderTasks();
-        input.value = "";
-        document.getElementById("due-date").value = "";
-    });
-
-    renderTasks();
-
+        tasks.push({
+            id: Date.now(),
+            text: taskText,
+            completed: false,
+            dueDate
+        });
+    
+    saveTasks();
+    renderTasks(currentFilter);
+    input.value = "";
+    document.getElementById("due-date").value = "";
+});
 
     document.getElementById("clear-completed-btn").addEventListener("click", () => {
         tasks = tasks.filter(task => !task.completed);
