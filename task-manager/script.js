@@ -39,9 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
             li.setAttribute("draggable", "true");
             
             list.appendChild(li);
-        });
-    }
-
+        
             const now = new Date();
 
             if (
@@ -144,6 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 li.appendChild(btnDiv);
                 list.appendChild(li);
         });
+    }
 
     list.addEventListener("dragstart", (e) => {
         if (e.target.tagName === "LI") {
