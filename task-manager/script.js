@@ -144,25 +144,18 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.target.tagName === "LI") {
             e.target.classList.remove("dragging");
 
-            const newOrder = [];
-            const completedTasks = [];
-
-            list.querySelectorAll("li").forEach((li) => {
-                const text = li.querySelector("span").textContent.split("Due:")[0].trim();
-                const match = tasks.find((t) => t.text === text);
-
-                if (match) {
-                    if (match.completed) {
-                        completedTasks.push(match);
-                    }
-                }
+            const visibleOrder = Array.from(list.querySelectorAll("li")).map((li) => {
+                return tasks.find((t) => t.id === parseInt(li.dataset.id, 10));
             });
 
-            tasks = [...newOrder, ...completedTasks];
+            const hiddenTasks = tasks.filter((t) => !visibleOrder.includes(t));
+            
+            tasks = [...visibleOrder, ...hiddenTasks];
+
             saveTasks();
-            renderTasks();
-        }
-    });
+            renderTasks(currentFilter);
+             }
+        });
 
     list.addEventListener("dragover", (e) => {
         e.preventDefault();
@@ -221,6 +214,3 @@ document.addEventListener("DOMContentLoaded", () => {
         renderTasks();
     });
 });
-
-
-//---------need to input in gpt to debug
