@@ -23,36 +23,27 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("tasks", JSON.stringify(tasks));
     }
 
-    function renderTasks() {
+    function renderTasks(filter = currentFilter) {
         list.innerHTML = "";
 
         tasks.sort((a, b) => {
+            if (!a.dueDate) return 1;
+            if (!b.dueDate) return -1;
+            return new Date(a.dueDate) - new Date(b.dueDate);
+
+        });
+
         tasks.forEach((task) => {
             if ((filter === "active" && task.completed) ||
                 (filter === "completed" && !task.completed)) {
                     return;
                 }
-
-            if (!b.dueDate) return -1;
-            return new Date(a.dueDate) - new Date(b.dueDate);
-        });
-
-        tasks.forEach((task, index) => {
+        
             const li = document.createElement("li");
-            const isCompleted = task.completed;
-
             li.dataset.id = task.id;
             li.setAttribute("draggable", "true");
         
             const now = new Date();
-
-            if (
-                (currentFilter === "active" && isCompleted) ||
-                (currentFilter === "completed" && !isCompleted)
-            ) {
-                return;
-            }
-
             if (task.dueDate) {
                 const dueDate = new Date(task.dueDate);
                 const timeDiff = dueDate - now;
@@ -65,18 +56,18 @@ document.addEventListener("DOMContentLoaded", () => {
                         
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            checkbox.checked = isCompleted;
+            checkbox.checked = task.completed;
             checkbox.addEventListener("change", () => {
                 task.completed = checkbox.checked;
                 saveTasks();
-                renderTasks();
+                renderTasks(filter);
             });
 
             const span = document.createElement("span");
             span.innerHTML = task.dueDate
                 ? `${task.text}<br><small style="color: gray;"><em>Due: ${task.dueDate}</em></small>`
                 : task.text;
-            if (isCompleted) span.classList.add("completed");
+            if (task.completed) span.classList.add("completed");
 
             const editBtn = document.createElement("button");
             editBtn.textContent = "Edit";
@@ -100,18 +91,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 cancelBtn.textContent = "Cancel";
                 cancelBtn.className = "cancel-btn";
 
-                saveBtn.addEventListener("click",() => {
+                saveBtn.addEventListener("click", () => {
                     task.text = editInput.value.trim();
                     task.dueDate = editDate.value;
                     saveTasks();
-                    renderTasks();
+                    renderTasks(filter);
                 });
 
                 cancelBtn.addEventListener("click", () => {
-                    renderTasks();
+                    renderTasks(filter);
                 });
 
-            li.innerHTML = "";
             li.appendChild(checkbox);
             li.appendChild(editInput);
             li.appendChild(editDate);
@@ -125,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
             deleteBtn.addEventListener("click", () => {
                 tasks = tasks.filter((t) => t.id !== task.id);
                 saveTasks();
-                renderTasks();
+                renderTasks(filter);
             });
 
                 const contentDiv = document.createElement("div");
@@ -231,3 +221,6 @@ document.addEventListener("DOMContentLoaded", () => {
         renderTasks();
     });
 });
+
+
+//---------need to input in gpt to debug
