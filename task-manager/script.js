@@ -48,11 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         visibleTasks.forEach((task) => {
             const li = document.createElement("li");
-            list.appendChild(li);
-        });
-    }
- 
-            const li = document.createElement("li");
             li.dataset.id = task.id;
             li.setAttribute("draggable", "true");
         
@@ -65,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (timeDiff < -oneDay) li.classList.add("task-overdue");
                 else if (timeDiff < oneDay) li.classList.add("task-due-soon");
                 else li.classList.add("task-future");
-                }
+            }
                         
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
@@ -73,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
             checkbox.addEventListener("change", () => {
                 task.completed = checkbox.checked;
                 saveTasks();
-                renderTasks(filter);
+                renderTasks(activeFilter);
             });
 
             const span = document.createElement("span");
@@ -108,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     task.text = editInput.value.trim();
                     task.dueDate = editDate.value;
                     saveTasks();
-                    renderTasks(filter);
+                    renderTasks(activeFilter);
                 });
 
                 cancelBtn.addEventListener("click", () => {
@@ -128,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
             deleteBtn.addEventListener("click", () => {
                 tasks = tasks.filter((t) => t.id !== task.id);
                 saveTasks();
-                renderTasks(filter);
+                renderTasks(activeFilter);
             });
 
                 const contentDiv = document.createElement("div");
