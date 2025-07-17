@@ -23,12 +23,12 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("tasks", JSON.stringify(tasks));
     }
 
-    function renderTasks(filter = currentFilter) {
+    function renderTasks(activeFilter = currentFilter) {
         list.innerHTML = "";
 
         const visibleTasks = tasks.filter(task => {
-            if (filter === "active") return !task.completed;
-            if (filter === "completed") return task.completed;
+            if (activeFilter === "active") return !task.completed;
+            if (activeFilter === "completed") return task.completed;
             return true;
         });
 
@@ -51,20 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
             list.appendChild(li);
         });
     }
-
-        tasks.sort((a, b) => {
-            if (!a.dueDate) return 1;
-            if (!b.dueDate) return -1;
-            return new Date(a.dueDate) - new Date(b.dueDate);
-
-        });
-
-        tasks.forEach((task) => {
-            if ((filter === "active" && task.completed) ||
-                (filter === "completed" && !task.completed)) {
-                    return;
-                }
-        
+ 
             const li = document.createElement("li");
             li.dataset.id = task.id;
             li.setAttribute("draggable", "true");
