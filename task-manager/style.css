@@ -235,3 +235,15 @@ li.draggin {
 li.drag-over {
     border-top: 3px solid #3b82f6;
 }
+
+.empty-message {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin-top: 1rem;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 1; }
+}

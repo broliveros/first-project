@@ -26,6 +26,32 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderTasks(filter = currentFilter) {
         list.innerHTML = "";
 
+        const visibleTasks = tasks.filter(task => {
+            if (filter === "active") return !task.completed;
+            if (filter === "completed") return task.completed;
+            return true;
+        });
+
+        if (visibleTasks.length === 0) {
+            const emptyMessage = document.createElement("p");
+            emptyMessage.className = "empty-messages";
+            emptyMessage.textContent = "No tasks here. Add one!";
+            list.appendChild(emptyMessage);
+            return;
+        }
+
+        visibleTasks.sort((a, b) => {
+            if (!a.dueDate) return 1;
+            if (!b.dueDate) return -1;
+            return new Date(a.dueDate) - new Date(b.dueDate);
+        });
+
+        visibleTasks.forEach((task) => {
+            const li = document.createElement("li");
+            list.appendChild(li);
+        });
+    }
+
         tasks.sort((a, b) => {
             if (!a.dueDate) return 1;
             if (!b.dueDate) return -1;
@@ -132,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 li.appendChild(btnDiv);
                 list.appendChild(li);
         });
-    }
+    
 
     list.addEventListener("dragstart", (e) => {
         if (e.target.tagName === "LI") {
