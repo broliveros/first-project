@@ -17,6 +17,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    const searchInput = document.getElementById("search-input");
+    searchInput.addEventListener("input", (e) => {
+        searchQuery = e.target.value.trim().toLowerCase();
+        renderTasks(currentFilter);
+    });
+    
+    let searchQuery = "";
+    document.getElementById("search-bar").addEventListener("input", (e) => {
+        searchQuery = e.target.value.toLowerCase();
+        renderTasks(currentFilter);
+    });
+
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
     function saveTasks() {
@@ -26,11 +38,20 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderTasks(activeFilter = currentFilter) {
         list.innerHTML = "";
 
-        const visibleTasks = tasks.filter(task => {
-            if (activeFilter === "active") return !task.completed;
-            if (activeFilter === "completed") return task.completed;
+        let visibleTasks = tasks.filter(task => {
+            if (activeFilter === "active" && task.completed) return false;
+            if (activeFilter === "completed" && !task.completed) return false;
+            
+            if (searchQuery && !task.text.toLowerCase().includes(searchQuery)) return false;
+            
             return true;
         });
+
+        if (searchQuery.trim() !=="") {
+            visibleTasks = visibleTasks.filter(task =>
+                task.text.toLowerCase().includes(searchQuery)
+            );
+        }
 
         if (visibleTasks.length === 0) {
             const emptyMessage = document.createElement("p");
@@ -71,10 +92,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 renderTasks(activeFilter);
             });
 
+            const priorityBadge = `<span class="priority-badge ${task.priority}">${task.priority}</span>`;
+
             const span = document.createElement("span");
             span.innerHTML = task.dueDate
-                ? `${task.text}<br><small style="color: gray;"><em>Due: ${task.dueDate}</em></small>`
-                : task.text;
+            ? `${task.text} ${priorityBadge}<br><small style="color: gray;"><em>Due: ${task.dueDate}</em></small>`
+            : `${task.text} ${priorityBadge}`;
+
             if (task.completed) span.classList.add("completed");
 
             const editBtn = document.createElement("button");
@@ -91,6 +115,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 editDate.type = "date";
                 editDate.value = task.dueDate || "";
 
+                const editPriority = document.createElement("select");
+                ["low","medium", "high"].forEach(p => {
+                    const opt = document.createElement("option");
+                    opt.value = p;
+                    opt.textContent = p.charAt(0).toUpperCase() + p.slice(1);
+                    if (task.priority === p) opt.selected = true;
+                    editPriority.appendChild(opt);
+                });
+
                 const saveBtn = document.createElement("button");
                 saveBtn.textContent = "Save";
                 saveBtn.className = "save-btn";
@@ -102,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 saveBtn.addEventListener("click", () => {
                     task.text = editInput.value.trim();
                     task.dueDate = editDate.value;
+                    task.priority = editPriority.value;
                     saveTasks();
                     renderTasks(activeFilter);
                 });
@@ -113,6 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
             li.appendChild(checkbox);
             li.appendChild(editInput);
             li.appendChild(editDate);
+            li.appendChild(editPriority);
             li.appendChild(saveBtn);
             li.appendChild(cancelBtn);
         });
@@ -139,6 +174,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 li.appendChild(contentDiv);
                 li.appendChild(btnDiv);
                 list.appendChild(li);
+
+                requestAnimationFrame(() => {
+                    li.classList.add("show");
+                });
         });
     
 
@@ -172,9 +211,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const afterElement = getDragAfterElement(list, e.clientY);
         list.querySelectorAll("li").forEach((li) => li.classList.remove("drag-over"));
+        
         if (afterElement == null) {
             list.appendChild(dragging);
         } else {
+            afterElement.classList.add("drag-over");
             list.insertBefore(dragging, afterElement);
         }
     });
@@ -200,6 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         const taskText = input.value.trim();
         const dueDate = document.getElementById("due-date").value;
+        const priority = document.getElementById("priority").value;
 
         if (!taskText) return;
 
@@ -207,7 +249,8 @@ document.addEventListener("DOMContentLoaded", () => {
             id: Date.now(),
             text: taskText,
             completed: false,
-            dueDate
+            dueDate,
+            priority
         });
     
     saveTasks();
@@ -221,4 +264,5 @@ document.addEventListener("DOMContentLoaded", () => {
         saveTasks();
         renderTasks();
     });
+}
 });

@@ -82,6 +82,19 @@ li {
     gap: 1rem;
     padding: 0.5rem;
     border-radius: 8px;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: opacity 0.3s ease; transform 0.3s ease;
+}
+
+li.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+li.drag-over {
+    border: 2px dashed #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
 }
 
 .task-content {
@@ -131,8 +144,7 @@ li button {
 
 .button-group {
     display: flex;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 8px;
 }
 
 #filter-buttons {
@@ -246,4 +258,42 @@ li.drag-over {
 
 @keyframes fadeIn {
     from { opacity: 1; }
+}
+
+.empty-message {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin-top: 20px;
+    opacity: 0.8;
+}
+
+.empty-message::before {
+    content: "mail";
+    display: block;
+    font-size: 2rem;
+    margin-top: 10px;
+}
+
+.priority-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: capitalize;
+    margin-left: 5px;
+}
+
+.priority-badge.low {
+    background: #d1fae5;
+    color: #065f46;
+}
+.priority-badge.medium {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.priority-badge.high {
+    background: #fee2e2;
+    color: #991b1b;
 }
