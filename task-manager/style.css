@@ -21,9 +21,21 @@ body {
 
 form.form-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 1rem;
-    align-items: stretch;
+    align-items: center;
+}
+
+form.form-row input[type="text"],
+form.form-row input[type="date"],
+form.form-row select,
+form.form-row button {
+    height: 44px;
+    padding: 0 12px;
+    font-size: 1rem;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
 input[type="text"],
@@ -47,13 +59,15 @@ button {
 }
 
 #clear-completed-btn {
+    flex-shrink: 0;
     background-color: #191970;
     color: white;
     border: none;
+    padding: 0 15px;
 }
 
 #clear-completed-btn:hover {
-    background-color: #191970;
+    background-color: #00008B;
 }
 
 button {

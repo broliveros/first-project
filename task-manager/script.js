@@ -17,15 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    let searchQuery = "";
     const searchInput = document.getElementById("search-input");
     searchInput.addEventListener("input", (e) => {
         searchQuery = e.target.value.trim().toLowerCase();
-        renderTasks(currentFilter);
-    });
-    
-    let searchQuery = "";
-    document.getElementById("search-bar").addEventListener("input", (e) => {
-        searchQuery = e.target.value.toLowerCase();
         renderTasks(currentFilter);
     });
 
@@ -46,20 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
             
             return true;
         });
-
-        if (searchQuery.trim() !=="") {
-            visibleTasks = visibleTasks.filter(task =>
-                task.text.toLowerCase().includes(searchQuery)
-            );
-        }
-
-        if (visibleTasks.length === 0) {
-            const emptyMessage = document.createElement("p");
-            emptyMessage.className = "empty-messages";
-            emptyMessage.textContent = "No tasks here. Add one!";
-            list.appendChild(emptyMessage);
-            return;
-        }
 
         visibleTasks.sort((a, b) => {
             if (!a.dueDate) return 1;
@@ -260,9 +241,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
     document.getElementById("clear-completed-btn").addEventListener("click", () => {
-        tasks = tasks.filter(task => !task.completed);
+        tasks = tasks.filter((task) => !task.completed);
         saveTasks();
         renderTasks();
     });
-}
+   }
 });
